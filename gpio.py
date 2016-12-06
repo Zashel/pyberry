@@ -47,10 +47,11 @@ class SimpleOutDevice():
         return self._is_on
 
     def commute(self):
+        print("{}".format(self.is_on))
         if self.is_on is True:
-            self.set_on()
-        else:
             self.set_off()
+        else:
+            self.set_on()
 
     def reverse(self):
         self._reversed = not self.reversed
