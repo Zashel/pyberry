@@ -47,7 +47,6 @@ class SimpleOutDevice():
         return self._is_on
 
     def commute(self):
-        print("{}".format(self.is_on))
         if self.is_on is True:
             self.set_off()
         else:
@@ -64,6 +63,13 @@ class SimpleOutDevice():
         GPIO.output(self.pin, self.off)
         self._is_on = False
 
+    def set_status(self, status):
+        if self.reversed is True:
+            status = not status
+        GPIO.output(self.pin, status)
+        self._is_on = status and True or False
+
 class Led(SimpleOutDevice):
     def __init__(self, board_pin):
         super().__init__(board_pin, True)
+
