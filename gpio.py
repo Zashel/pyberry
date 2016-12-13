@@ -1,12 +1,16 @@
 #!/usr/bin/python3
 
 from RPi import GPIO
+import time
 
 class SimpleOutDevice():
     def __init__(self, board_pin, reversed=False):
         self._pin = board_pin
         self._reversed = reversed
         self._is_on = False
+        self.initialize()
+
+    def initialize(self):
         GPIO.setmode(GPIO.BOARD)
         GPIO.setup(self.pin, GPIO.OUT)
         self.set_off()
@@ -73,3 +77,52 @@ class Led(SimpleOutDevice):
     def __init__(self, board_pin):
         super().__init__(board_pin, True)
 
+class PWMDevice(SimpleOutDevice):
+    def __init__(self, board_pin=12, freq=1000):
+        self._value = 0
+        super().__init__(board_pin)
+        self._pwm_pin = GPIO.PWM(board_pin, freq)
+        self._pwm_pin.start(self._value)
+        self.set_off()
+    
+    def initialize(self):
+        GPIO.setmode(GPIO.BOARD)
+        GPIO.setup(self.pin, GPIO.OUT)
+
+    def __def__(self):
+        self.set_off
+        self.pwm_pin.stop()
+        super().__del__() 
+
+    @property
+    def pwm_pin(self):
+        return self._pwm_pin
+
+    @property
+    def value(self):
+        return self._value
+
+    def set_value(self, value, step=1, t=1):
+        self._value, old_value = value, self._value
+        if old_value > value:
+            step = -1 * step
+        for x in range(old_value, value+step, step):
+            self.pwm_pin.ChangeDutyCycle(x)
+            time.sleep(float(t)*(step/100)) #Sacar el Módulo de step
+    
+    def set_off(self, step=1, t=1):
+        self.set_value(0, step, t)
+        self._is_on = False
+   
+    def set_on(self, step=1, t=1):
+        self.set_value(100, step, t)
+        self._is_on = True
+
+    def set_status(self, status, step=1, t=1):
+        self.set_value(self, status, step, t)
+
+    def commute(self, step=1, t=1):
+        if self._is_on is True:
+            self.set_off(step, t)
+        else:
+            self.set_on(step, t)
