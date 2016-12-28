@@ -108,7 +108,7 @@ class PWMDevice(SimpleOutDevice):
             step = -1 * step
         for x in range(old_value, value+step, step):
             self.pwm_pin.ChangeDutyCycle(x)
-            time.sleep(float(t)*(step/100)) #Sacar el Módulo de step
+            time.sleep(float(t)*(abs(step)/100))
     
     def set_off(self, step=1, t=1):
         self.set_value(0, step, t)
